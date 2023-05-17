@@ -14,6 +14,8 @@ import org.openqa.selenium.By;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
@@ -75,10 +77,23 @@ public class SelenideFilesTest {
         try (
                 InputStream resourceAsStream = cl.getResourceAsStream("cities.csv");
                 CSVReader reader = new CSVReader(new InputStreamReader(resourceAsStream))
-        ){
+        ) {
             List<String[]> content = reader.readAll();
             System.out.println();
             assertThat(content.get(1)[8]).contains("Youngstown");
+        }
+    }
+
+    @Test
+    void zipParserTest() throws Exception {
+        try (
+                InputStream resourceAsStream = cl.getResourceAsStream("cities.zip");
+                ZipInputStream zis = new ZipInputStream(resourceAsStream)
+        ) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null){
+                assertThat(entry.getName()).isEqualTo("cities.csv");
+            }
         }
     }
 }
