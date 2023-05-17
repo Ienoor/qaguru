@@ -4,14 +4,18 @@ import com.codeborne.pdftest.PDF;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.xlstest.XLS;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
 import com.opencsv.CSVReader;
-import org.assertj.core.api.AbstractStringAssert;
+import guru.qa.modals.Persons;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -20,7 +24,6 @@ import java.util.zip.ZipInputStream;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY_2D;
 
 public class SelenideFilesTest {
 
@@ -94,6 +97,21 @@ public class SelenideFilesTest {
             while ((entry = zis.getNextEntry()) != null){
                 assertThat(entry.getName()).isEqualTo("cities.csv");
             }
+        }
+    }
+
+
+    @Test
+    void jsonParseTest() throws Exception {
+        Gson gson = new Gson();
+        try (
+                InputStream resourceAsStream = cl.getResourceAsStream("person.json");
+                JsonReader reader = new JsonReader(new InputStreamReader(resourceAsStream))
+        ) {
+            Persons json = gson.fromJson(reader, Persons.class);
+            assertThat(json.name).isEqualTo("John");
+            assertThat(json.car).isTrue();
+            assertThat(json.jobs.developer[0]).isEqualTo("QA engineer");
         }
     }
 }

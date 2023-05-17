@@ -1,0 +1,8 @@
+{
+  "name": "John",
+  "age": 30,
+  "car": true,
+  "jobs": {
+    "developer": ["QA engineer", "JAVA Developer"]
+  }
+}
