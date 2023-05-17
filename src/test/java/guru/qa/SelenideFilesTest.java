@@ -82,7 +82,6 @@ public class SelenideFilesTest {
                 CSVReader reader = new CSVReader(new InputStreamReader(resourceAsStream))
         ) {
             List<String[]> content = reader.readAll();
-            System.out.println();
             assertThat(content.get(1)[8]).contains("Youngstown");
         }
     }
